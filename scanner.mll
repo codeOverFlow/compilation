@@ -26,6 +26,7 @@ let identifier = alpha_char (alpha_char | digit)*
 let print      = ('p'|'P') ('r'|'R') ('i'|'I') ('n'|'N') ('t'|'T')
 let sleep      = ('s'|'S') ('l'|'L') ('e'|'E') ('e'|'E') ('p'|'P')
 let rem        = ('r'|'R') ('e'|'E') ('m'|'M')
+let cond        = ('i'|'I') ('f'|'F')
 
 
         (** The main lexing rule. *)
@@ -36,6 +37,7 @@ rule token = parse
   | sleep        { incr_bol lexbuf 5; SLEEP }
   | '"'          { incr_bol lexbuf 1; Buffer.reset buffer; str_rule buffer lexbuf }
   | ''' | rem    { incr_bol lexbuf 1; Buffer.reset buffer; Buffer.add_string buffer "//"; comment buffer lexbuf }
+  | cond         { incr_bol lexbuf 2; Buffer.reset buffer;  }
   | eof          { EOF }
 
   (* Skip white spaces *)
