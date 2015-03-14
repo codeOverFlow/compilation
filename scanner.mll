@@ -26,7 +26,8 @@ let identifier = alpha_char (alpha_char | digit)*
 let print      = ('p'|'P') ('r'|'R') ('i'|'I') ('n'|'N') ('t'|'T')
 let sleep      = ('s'|'S') ('l'|'L') ('e'|'E') ('e'|'E') ('p'|'P')
 let rem        = ('r'|'R') ('e'|'E') ('m'|'M')
-let cond        = ('i'|'I') ('f'|'F')
+let cond       = ('i'|'I') ('f'|'F')
+let mthen      = ('t'|'T') ('h'|'H') ('e'|'E') ('n'|'N')
 
 
         (** The main lexing rule. *)
@@ -37,7 +38,7 @@ rule token = parse
   | sleep        { incr_bol lexbuf 5; SLEEP }
   | '"'          { incr_bol lexbuf 1; Buffer.reset buffer; str_rule buffer lexbuf }
   | ''' | rem    { incr_bol lexbuf 1; Buffer.reset buffer; Buffer.add_string buffer "//"; comment buffer lexbuf }
-  | cond         { incr_bol lexbuf 2; Buffer.reset buffer;  }
+  | cond         { incr_bol lexbuf 2; Buffer.reset buffer; statement buffer lexbuf }
   | eof          { EOF }
 
   (* Skip white spaces *)
@@ -55,5 +56,7 @@ and next_str buffer = parse
 and comment buffer = parse
   | '\n'           { incr_bol lexbuf 2; COMMENT (Buffer.contents buffer)  }
   | _ as lxm       { incr_bol lexbuf 1; Buffer.add_char buffer lxm; comment buffer lexbuf }
+and statement buffer = parse
+  | mthen {  }
   
 {}
