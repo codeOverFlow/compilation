@@ -28,6 +28,7 @@ let sleep      = ('s'|'S') ('l'|'L') ('e'|'E') ('e'|'E') ('p'|'P')
 let rem        = ('r'|'R') ('e'|'E') ('m'|'M')
 let cond       = ('i'|'I') ('f'|'F')
 let mthen      = ('t'|'T') ('h'|'H') ('e'|'E') ('n'|'N')
+let endif      = ('e'|'E') ('n'|'N') ('d'|'D') (' ') cond
 
 
         (** The main lexing rule. *)
@@ -38,7 +39,8 @@ rule token = parse
   | sleep        { incr_bol lexbuf 5; SLEEP }
   | '"'          { incr_bol lexbuf 1; Buffer.reset buffer; str_rule buffer lexbuf }
   | ''' | rem    { incr_bol lexbuf 1; Buffer.reset buffer; Buffer.add_string buffer "//"; comment buffer lexbuf }
-  | cond         { incr_bol lexbuf 2; Buffer.reset buffer; statement buffer lexbuf }
+  | cond         { incr_bol lexbuf 2; Buffer.reset buffer; Buffer.add_string buffer "if ("; conditional buffer lexbuf }
+  | endif        { incr_bol lexbuf 6; ENDIF }
   | eof          { EOF }
 
   (* Skip white spaces *)
@@ -54,9 +56,10 @@ and next_str buffer = parse
   | '\n'     { Buffer.add_char buffer '\\'; Buffer.add_char buffer 'n'; Buffer.add_char buffer '"'; incr_line lexbuf; STRING (Buffer.contents buffer) }
   | _        { incr_bol lexbuf 1; next_str buffer lexbuf }
 and comment buffer = parse
-  | '\n'           { incr_bol lexbuf 2; COMMENT (Buffer.contents buffer)  }
-  | _ as lxm       { incr_bol lexbuf 1; Buffer.add_char buffer lxm; comment buffer lexbuf }
-and statement buffer = parse
-  | mthen {  }
+  | '\n'     { incr_bol lexbuf 2; COMMENT (Buffer.contents buffer)  }
+  | _ as lxm { incr_bol lexbuf 1; Buffer.add_char buffer lxm; comment buffer lexbuf }
+and conditional buffer = parse
+   | mthen   { incr_bol lexbuf 1; Buffer.add_char buffer ')'; Buffer.add_char buffer ' '; Buffer.add_char buffer '{'; IF (Buffer.contents buffer) }
+   | _ as c  { incr_bol lexbuf 1; Buffer.add_char buffer c; conditional buffer lexbuf }
   
 {}
