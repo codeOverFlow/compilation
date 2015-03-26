@@ -7,8 +7,10 @@
 %token PRINT
 %token EOF
 %token SLEEP
+%token ENDIF
 %token<string> STRING
 %token<string> COMMENT
+%token<string> IF
 %start bas_file
 %type<unit> bas_file
 %%
@@ -41,6 +43,8 @@ code:
         /* empty */    {}
         | PRINT STRING { print_string "printf("; print_string $2; print_endline ");" }
         | SLEEP        { print_endline "getchar();" }
+        | IF           { print_endline $1 }
+        | ENDIF        { print_endline "}" }
 ;
 
 comment:
