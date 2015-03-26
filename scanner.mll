@@ -28,6 +28,7 @@ let sleep      = ('s'|'S') ('l'|'L') ('e'|'E') ('e'|'E') ('p'|'P')
 let rem        = ('r'|'R') ('e'|'E') ('m'|'M')
 let cond       = ('i'|'I') ('f'|'F')
 let mthen      = ('t'|'T') ('h'|'H') ('e'|'E') ('n'|'N')
+let melse      = ('e'|'E') ('l'|'L') ('s'|'S') ('e'|'E')
 let endif      = ('e'|'E') ('n'|'N') ('d'|'D') (' ') cond
 
 
@@ -40,6 +41,7 @@ rule token = parse
   | '"'          { incr_bol lexbuf 1; Buffer.reset buffer; str_rule buffer lexbuf }
   | ''' | rem    { incr_bol lexbuf 1; Buffer.reset buffer; Buffer.add_string buffer "//"; comment buffer lexbuf }
   | cond         { incr_bol lexbuf 2; Buffer.reset buffer; Buffer.add_string buffer "if ("; conditional buffer lexbuf }
+  | melse        { incr_bol lexbuf 4; ELSE ("} else {") }
   | endif        { incr_bol lexbuf 6; ENDIF }
   | eof          { EOF }
 
