@@ -11,6 +11,7 @@
 %token<string> STRING
 %token<string> COMMENT
 %token<string> IF
+%token<string> ELSE
 %start bas_file
 %type<unit> bas_file
 %%
@@ -44,6 +45,7 @@ code:
         | PRINT STRING { print_string "printf("; print_string $2; print_endline ");" }
         | SLEEP        { print_endline "getchar();" }
         | IF           { print_endline $1 }
+        | ELSE         { print_endline $1 }
         | ENDIF        { print_endline "}" }
 ;
 
