@@ -36,9 +36,9 @@ let endif      = ('e'|'E') ('n'|'N') ('d'|'D') (' ') cond
 rule token = parse
   (* Tokens to send to the parser. *)
   | '\n'         { incr_line lexbuf; token lexbuf }
-  | print        { incr_bol lexbuf 5; Buffer.add_char buffer '"'; PRINT }
+  | print        { incr_bol lexbuf 5;  PRINT }
   | sleep        { incr_bol lexbuf 5; SLEEP }
-  | '"'          { incr_bol lexbuf 1; Buffer.reset buffer; str_rule buffer lexbuf }
+  | '"'          { incr_bol lexbuf 1; Buffer.reset buffer; Buffer.add_char buffer '"';  str_rule buffer lexbuf }
   | ''' | rem    { incr_bol lexbuf 1; Buffer.reset buffer; Buffer.add_string buffer "//"; comment buffer lexbuf }
   | cond         { incr_bol lexbuf 2; Buffer.reset buffer; Buffer.add_string buffer "if ("; conditional buffer lexbuf }
   | melse        { incr_bol lexbuf 4; ELSE ("} else {") }

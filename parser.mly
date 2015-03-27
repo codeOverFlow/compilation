@@ -37,7 +37,7 @@ fin:
 
 lines:
         /* empty */  {}
-        | lines code comment {}
+        | lines code {}
 ;
 
 code:
@@ -47,9 +47,5 @@ code:
         | IF           { print_endline $1 }
         | ELSE         { print_endline $1 }
         | ENDIF        { print_endline "}" }
-;
-
-comment:
-        /* empty */    {}
         | COMMENT      { print_endline $1 }
 ;
