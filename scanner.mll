@@ -1,22 +1,21 @@
 {
         (* Open the parser module for the tokens declarations. *)
-        open Parser
+        open Parser;;
                 (* Open the lexing module to update lexbuf position. *)
-        open Lexing
+           open Lexing;;
         (** Increments the lexing buffer line number counter.*)
         let incr_line lexbuf =
                 let pos = lexbuf.lex_curr_p in
-                lexbuf.lex_curr_p <-
-                        {pos with pos_lnum = pos.pos_lnum + 1; pos_bol = 0}
+                lexbuf.lex_curr_p <- {pos with pos_lnum = pos.pos_lnum + 1; pos_bol = 0};;
                         (** Increments the lexing buffer line offset by the given length. *)
         let incr_bol lexbuf length =
                 let pos = lexbuf.lex_curr_p in
-                lexbuf.lex_curr_p <- {pos with pos_bol = pos.pos_bol + length}
+                lexbuf.lex_curr_p <- {pos with pos_bol = pos.pos_bol + length};;
                 (** Increments the lexing buffer line offset by the given lexem length. *)
-        let incr_bol_lxm lexbuf lxm = incr_bol lexbuf (String.length lxm)
+        let incr_bol_lxm lexbuf lxm = incr_bol lexbuf (String.length lxm);;
         (** Turns a char into a string containing this char. *)
-        let string_of_char c = String.make 1 c
-        let buffer = Buffer.create 20
+        let string_of_char c = String.make 1 c;;
+        let buffer = Buffer.create 20;;
 }
 
 
