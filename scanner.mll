@@ -16,6 +16,7 @@
         (** Turns a char into a string containing this char. *)
         let string_of_char c = String.make 1 c;;
         let buffer = Buffer.create 20;;
+        let vars = Hashtbl.create 1;;
 }
 
 
@@ -29,6 +30,8 @@ let cond       = ('i'|'I') ('f'|'F')
 let mthen      = ('t'|'T') ('h'|'H') ('e'|'E') ('n'|'N')
 let melse      = ('e'|'E') ('l'|'L') ('s'|'S') ('e'|'E')
 let endif      = ('e'|'E') ('n'|'N') ('d'|'D') (' ') cond
+let dim        = ('d'|'D') ('i'|'I') ('m'|'M')
+let integer    = ('i'|'I') ('n'|'N') ('t'|'T') ('e'|'E') ('g'|'G') ('e'|'E') ('r'|'R')
 
 
         (** The main lexing rule. *)
@@ -42,7 +45,9 @@ rule token = parse
   | cond         { incr_bol lexbuf 2; Buffer.reset buffer; Buffer.add_string buffer "if ("; conditional buffer lexbuf }
   | melse        { incr_bol lexbuf 4; ELSE ("} else {") }
   | endif        { incr_bol lexbuf 6; ENDIF }
+  | dim          { incr_bol lexbuf 3; Buffer.reset buffer; var_rules buffer lexbuf }
   | eof          { EOF }
+  | identifier as i { Buffer.reset buffer; Buffer.add_string buffer i; check_line buffer lexbuf }
 
   (* Skip white spaces *)
   | ' ' | '\t' | '\r' | '\n' { token lexbuf }
@@ -62,5 +67,12 @@ and comment buffer = parse
 and conditional buffer = parse
    | mthen   { incr_bol lexbuf 1; Buffer.add_char buffer ')'; Buffer.add_char buffer ' '; Buffer.add_char buffer '{'; IF (Buffer.contents buffer) }
    | _ as c  { incr_bol lexbuf 1; Buffer.add_char buffer c; conditional buffer lexbuf }
-  
+and var_rules buffer = parse
+   | integer { incr_bol lexbuf 7; Hashtbl.add vars (Buffer.contents buffer) 0; VAR ("int "^(Buffer.contents buffer)^" = 0;") }
+   | "as"    { incr_bol lexbuf 2; var_rules buffer lexbuf }
+   | ' ' | '\t' | '\r' { incr_bol lexbuf 1; var_rules buffer lexbuf }
+   | _ as c  { incr_bol lexbuf 1; Buffer.add_char buffer c; var_rules buffer lexbuf }
+and check_line buffer = parse
+   | '\n'    { Buffer.add_char buffer ';'; LINE (Buffer.contents buffer) }
+   | _ as c  { Buffer.add_char buffer c; check_line buffer lexbuf }
 {}
