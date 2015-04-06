@@ -57,6 +57,7 @@ and comment buffer = parse
   | '\n'           { incr_bol lexbuf 2; COMMENT (Buffer.contents buffer)  }
   | _ as lxm       { incr_bol lexbuf 1; Buffer.add_char buffer lxm; comment buffer lexbuf }
 and statement buffer = parse
-  | mthen {  }
+  | mthen { COND (Buffer.contents buffer) }
+  | _ as lxm { Buffer.add_char buffer lxm }
   
 {}
