@@ -1,13 +1,13 @@
-' oeoeuoaeuoaeuoeaoeu
+// Commentaire
 PrInt "Hello\nWorld" "hello" "13"
-' aoeuaoeoaeiaooaueo
-dim batard as integer
-batard = 42
-If batard < 5 Then
-	print "aou" "coles"
-	' aseotuasu
-	print "aoseutaoesnuaosneudonteui*otektkt uh oetud othu onetu donethud notehdu naotehud anothedu ntaoh"
+// commentaire
+dim nombre as integer
+nombre = 42
+If nombre < 5 Then
+	print "test" "coles"
+	// encore un commentaire
+	print "Chaine avec des espaces"
 else
-	print "astuhanhu"
+	print "Autre*chaine***"
 end if
 SLeeP
