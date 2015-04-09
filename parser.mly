@@ -7,8 +7,13 @@
 %token PRINT
 %token EOF
 %token SLEEP
+%token ENDIF
 %token<string> STRING
 %token<string> COMMENT
+%token<string> IF
+%token<string> ELSE
+%token<string> VAR
+%token<string> LINE
 %start bas_file
 %type<unit> bas_file
 %%
@@ -34,16 +39,17 @@ fin:
 
 lines:
         /* empty */  {}
-        | lines code comment {}
+        | lines code {}
 ;
 
 code:
         /* empty */    {}
         | PRINT STRING { print_string "printf("; print_string $2; print_endline ");" }
         | SLEEP        { print_endline "getchar();" }
-;
-
-comment:
-        /* empty */    {}
+        | IF           { print_endline $1 }
+        | ELSE         { print_endline $1 }
+        | ENDIF        { print_endline "}" }
         | COMMENT      { print_endline $1 }
+        | VAR          { print_endline $1 }
+        | LINE         { print_endline $1 }
 ;
